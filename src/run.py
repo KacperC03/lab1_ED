@@ -1,27 +1,32 @@
 import csv
-from RatingLib import User, Movie
+from RatingLib import User, Movie, Tag
 from tqdm import tqdm
 from RatingSystem import RatingSystem, RatingSystemCompetition
 from SampleSystems import NaiveRating, AverageMovieRating, GlobalAverageMovieRating, Cheater, AverageUserRating
 from system156007 import MySystem
-from StudentSystems import Sys147715
 # from secret_system import MySystem as secret
 
 def main():
     #read the movie indices
-    with open('../data/movie.csv', encoding='utf-8') as file:
+    with open('./data/movie.csv', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
         csv_reader.__next__()
         for line in csv_reader:
             Movie(int(line[0]), line[1])
     #read the user indices
-    with open('../data/rating.csv', encoding='utf-8') as file:
+    with open('./data/rating.csv', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
         csv_reader.__next__()
         for line in tqdm(csv_reader, total=20000263):
             if not int(line[0]) in User.index.keys():
                 User(int(line[0]))
             User.index[int(line[0])].add_rating(Movie.index[int(line[1])],float(line[2]))
+
+    with open('./data/genome_scores.csv', encoding='utf-8') as file:
+        csv_reader = csv.reader(file)
+        csv_reader.__next__()
+        for line in tqdm(csv_reader, total=11709768):
+            Movie.index[int(line[0])].append(Tag(int(line[0]),int(line[1])))
     
     #create the competition
     competition = RatingSystemCompetition()

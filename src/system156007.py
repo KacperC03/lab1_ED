@@ -24,7 +24,7 @@ class MySystem(RatingSystem):
         movie_avg=self.calc_movie_avg(movie)
         # user_avg=self.calc_user_avg(user)
         rate_num = len(user.ratings)
-        random_sample = np.random.choice(user.ratings,100,replace=False) if len(rate_num>=100) else np.random.choice(user.ratings,rate_num,replace=False)
+        random_sample = np.random.choice(list(user.ratings),100,replace=False) if rate_num>=100 else np.random.choice(list(user.ratings),rate_num,replace=False)
         offset = 0
         for movie in random_sample:
             curr_movie = self.calc_movie_avg(movie)

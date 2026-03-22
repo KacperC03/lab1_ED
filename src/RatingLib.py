@@ -1,3 +1,13 @@
+class Tag:
+    """
+        Object of this class represents a single tag.
+    """
+    index = {}
+    def __init__(self, id, relevance):
+        self.id = id
+        self.relevance = relevance
+        Movie.Tag.index[id] = self
+
 class Movie:
     """
         Object of this class represents a single movie
@@ -7,7 +17,7 @@ class Movie:
     inner_index = {}
     reverse_inner_index = {}
     inner_index_gen = 0
-    def __init__(self, id, name):
+    def __init__(self, id, name, tags: list[Tag] = []):
         """
             Initializer of the movie creates an empty object with a given ID and a name. The movie is indexed in index via index[id] = self and in name_index via name_index[name] = self. There is no reverse index.
             
@@ -17,6 +27,7 @@ class Movie:
         """
         self.id = id
         self.name = name
+        self.tags = tags
         self.ratings = []
         self.genres = []
         Movie.index[id] = self
