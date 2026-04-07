@@ -19,6 +19,8 @@ class Movie:
         self.name = name
         self.ratings = []
         self.genres = []
+        self.genome_scores = {}
+        self.sorted_tags = []
         Movie.index[id] = self
         Movie.name_index[name] = self
         self.add_genres(genres)
@@ -32,7 +34,16 @@ class Movie:
     def add_genres(self, genre_list):
         for genre in genre_list:
             self.genres.append(genre)
-
+    def add_genome_score(self, tag_id, relevance):
+        """
+            This method adds a single genome score (tag relevance) to a movie.
+            
+            :param tag_id: tag identifier (numerical)
+            :param relevance: relevance score (numerical)
+        """
+        self.genome_scores[tag_id] = relevance
+    def sort_tags(self):
+        self.sorted_tags = sorted(self.genome_scores.keys(), key=lambda tag_id: self.genome_scores[tag_id], reverse=True)
     
     
 class User:
