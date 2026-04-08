@@ -3,6 +3,8 @@ import numpy as np
 from RatingLib import Movie
 import copy
 
+# This system requires additional information from file genome_scores.csv. Required changes in run.py and RatingLib.py are implemented in pr: https://github.com/dudenzz/eksploracja_problem1/pull/8
+
 class MySystem(RatingSystem):
     def __init__(self, num_tags=10, weight=0.1, threshold = 0.05):
         super().__init__()
