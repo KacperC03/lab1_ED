@@ -86,11 +86,8 @@ class MySystem(RatingSystem):
                 
             fold_rmse = np.sqrt(np.mean(errors))
             rmse_scores.append(fold_rmse)
-            print(f"Fold {fold+1}/{k} - RMSE: {fold_rmse:.4f}")
             
         mean_rmse = np.mean(rmse_scores)
-        std_rmse = np.std(rmse_scores)
-        print(f"Cross-validation: Avg RMSE = {mean_rmse:.4f} (+/- {std_rmse:.4f})\n")
         
         return mean_rmse
     def __str__(self):
