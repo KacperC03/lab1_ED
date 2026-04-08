@@ -4,7 +4,7 @@ from RatingLib import Movie
 import copy
 
 class MySystem(RatingSystem):
-    def __init__(self, num_tags=5, weight=0, threshold = 0.1):
+    def __init__(self, num_tags=10, weight=0.1, threshold = 0.05):
         super().__init__()
         self.tags=num_tags
         self.w=weight
@@ -29,26 +29,30 @@ class MySystem(RatingSystem):
         else:
             return sum(user.ratings.values())/n
     def rate(self, user, movie):
-        """
-        Ta metoda zwraca rating w skali 1-5. Jest to ocena przyznana przez użytkownika 'user' filmowi 'movie'.
-        """
-        # user_avg=self.calc_user_avg(user)
-        num=0
-        movie_avg=0
-        for mv in self.movies:
-            jacc_sim_gen = self.jaccard_similarity(Movie.index[movie].genres,Movie.index[mv].genres)
-            tags_a = Movie.index[movie].sorted_tags[:self.tags]
-            tags_b = Movie.index[mv].sorted_tags[:self.tags]
-            jacc_sim_tag = self.jaccard_similarity(tags_a,tags_b)
-            full_sim = (jacc_sim_gen*self.w+jacc_sim_tag*(1-self.w))/2
-            if(full_sim>=self.t):
-                movie_avg+=self.calc_movie_avg(mv)
-                num+=1
-            #print(full_sim)
-        if num==0:
+        num = 0
+        weighted_sum = 0
+        similarity_sum = 0
+        
+        target_movie = Movie.index[movie]
+        target_tags = target_movie.sorted_tags[:self.tags]
+
+        for rated_movie_id, user_rating in user.ratings.items():
+            comparison_movie = Movie.index[rated_movie_id]
+            jacc_sim_gen = self.jaccard_similarity(target_movie.genres, comparison_movie.genres)
+            comp_tags = comparison_movie.sorted_tags[:self.tags]
+            jacc_sim_tag = self.jaccard_similarity(target_tags, comp_tags)
+            
+            full_sim = (jacc_sim_gen * self.w + jacc_sim_tag * (1 - self.w))
+            
+            if full_sim >= self.t:
+                weighted_sum += (user_rating * full_sim)
+                similarity_sum += full_sim
+                num += 1
+
+        if similarity_sum == 0:
             return self.calc_movie_avg(movie)
-        movie_avg/=num
-        return min(max(movie_avg,0.5),5)
+            
+        return min(max(weighted_sum / similarity_sum, 0.5), 5)
     
     def cross_validate(self, k=5, sample_size=5000):
         all_interactions = []
@@ -57,7 +61,6 @@ class MySystem(RatingSystem):
                 all_interactions.append((user_id, movie_id, rating))
                 
         sample_size = min(sample_size, len(all_interactions))
-        np.random.seed(42) # unseed before turn in
         indices = np.random.choice(len(all_interactions), sample_size, replace=False)
         cv_sample = [all_interactions[i] for i in indices]
         
