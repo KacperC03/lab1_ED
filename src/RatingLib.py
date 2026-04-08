@@ -75,5 +75,3 @@ class User:
         """
         str_bldr = f'{self.id}'
         return str_bldr
-
-        

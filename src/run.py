@@ -4,6 +4,7 @@ from tqdm import tqdm
 from RatingSystem import RatingSystem, RatingSystemCompetition
 from SampleSystems import NaiveRating, AverageMovieRating, GlobalAverageMovieRating, Cheater, AverageUserRating
 from system156007 import MySystem
+# from StudentSystems import Sys147715
 # from secret_system import MySystem as secret
 
 def main():
